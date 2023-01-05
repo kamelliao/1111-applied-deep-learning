@@ -38,7 +38,7 @@ First you need to predict the unseen domain courses by above steps.
 
 Then, using the pred.csv to predict unseen domain subgroup.
 ```shell
-python unseen/course2subgroup.py --unseen_course_pred {1} --output_file {4}
-# --unseen_course_pred: the output file of unseen domain courses, default="preds.csv"
-# --output_file: where you want to store the output file, default="unseen_group_pred.csv"
+python unseen/course2subgroup.py --unseen_course_pred {1} --output_file {2}
+# {1}: the output file of unseen domain courses, default="preds.csv"
+# {2}: where you want to store the output file, default="unseen_group_pred.csv"
 ```
