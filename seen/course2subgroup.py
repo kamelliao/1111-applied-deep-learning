@@ -25,7 +25,7 @@ if __name__ == '__main__':
     subgroups = datasets['subgroups'].copy()
     subgroups = {r['subgroup_name']: r['subgroup_id'] for _, r in subgroups.iterrows()}
 
-    preds = pd.read_csv('preds_cf.csv')
+    preds = pd.read_csv('preds_test_seen_cf.csv')
     preds['course_id'] = preds.course_id.str.split()
     preds['subgroup'] = preds.course_id.apply(course2subgroups)
     
