@@ -23,7 +23,7 @@ Now, we are ready to obtain prediction on test data, run
 python3 seen/main.py --test
 ```
 
-### Unseen domain
+### Unseen domain(courses)
 To label-encode each categorical columns in user data and course data, run
 ```bash
 python3 unseen/vocab.py
@@ -32,4 +32,13 @@ python3 unseen/preprocess.py
 For model training and prediction, run
 ```bash
 python3 unseen/main.py
+```
+### Unseen domain(Subgroup)
+First you need to predict the unseen domain courses by above steps.
+
+Then, using the pred.csv to predict unseen domain subgroup.
+```shell
+python unseen/course2subgroup.py --unseen_course_pred {1} --output_file {4}
+# --unseen_course_pred: the output file of unseen domain courses, default="preds.csv"
+# --output_file: where you want to store the output file, default="unseen_group_pred.csv"
 ```

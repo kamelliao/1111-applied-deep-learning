@@ -2,7 +2,7 @@ from pathlib import Path
 import yaml
 
 from bs4 import BeautifulSoup
-from ckiptagger import WS
+from ckiptagger import WS, data_utils
 import pandas as pd
 
 
@@ -32,6 +32,8 @@ if __name__ == '__main__':
     courses = courses.fillna(' ')
 
     # tokenization
+    data_utils.download_data_url("./") # iis-ckip
+    data_utils.download_data_gdown("./") # gdrive-ckip
     tokenizer = WS(TOKENIZER_PATH, disable_cuda=True)
 
     for field in COURSE_TEXT_FIELDS:
