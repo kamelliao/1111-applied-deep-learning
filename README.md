@@ -23,6 +23,13 @@ Now, we are ready to obtain prediction on test data, run
 python3 seen/main.py --test
 ```
 
+### Seen domain(subgroup)
+First you need to predict the seen domain courses by above steps.
+Then, using the output csv to predict seen domain subgroup.
+```bash
+python3 seen/course2subgroup.py
+```
+
 ### Unseen domain(courses)
 To label-encode each categorical columns in user data and course data, run
 ```bash
