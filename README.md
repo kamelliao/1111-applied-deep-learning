@@ -7,7 +7,7 @@
 pip install -r requirements.txt
 ```
 
-### Seen domain
+### Seen domain(courses)
 To tokenize course description, run
 ```bash
 python3 seen/preprocess_course.py

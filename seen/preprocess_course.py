@@ -32,8 +32,8 @@ if __name__ == '__main__':
     courses = courses.fillna(' ')
 
     # tokenization
-    data_utils.download_data_url("./") # iis-ckip
-    data_utils.download_data_gdown("./") # gdrive-ckip
+    data_utils.download_data_url("seen/resources") # iis-ckip
+    data_utils.download_data_gdown("seen/resources") # gdrive-ckip
     tokenizer = WS(TOKENIZER_PATH, disable_cuda=True)
 
     for field in COURSE_TEXT_FIELDS:
