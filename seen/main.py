@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from pathlib import Path
+import yaml
 
 from tqdm import tqdm
 import numpy as np
@@ -22,14 +23,14 @@ COURSE_FEATS = [
 
 
 def load_datasets():
-    dataset_dir = Path('hahow/data')
+    dataset_dir = Path(cfg['data_path'])
     datasets = {data_path.stem: pd.read_csv(data_path) for data_path in dataset_dir.iterdir()}
 
     return datasets
 
 
 def get_content_sim(method='bm25'):
-    courses_df = pd.read_json('resources/courses_tokenized_clean.json', lines=True)
+    courses_df = pd.read_json('seen/resources/courses_tokenized_clean.json', lines=True)
     courses_df.sort_values('course_id', inplace=True)  # to align with MultiLabelBinarizer's order
 
     # build corpus
@@ -39,7 +40,7 @@ def get_content_sim(method='bm25'):
     
     # build index
     if method == 'tfidf':
-        model = TfidfVectorizer(max_df=0.5, stop_words=Path('resources/stopwords.txt').read_text().split('\n'))
+        model = TfidfVectorizer(max_df=0.5, stop_words=Path('seen/resources/stopwords.txt').read_text().split('\n'))
         corpus_tfidf = model.fit_transform(corpus)
         content_sim = cosine_similarity(corpus_tfidf, corpus_tfidf)
     elif method == 'bm25':
@@ -68,6 +69,8 @@ def inference(split='val_seen'):
 
 
 if __name__ == '__main__':
+    cfg = yaml.safe_load(open('config.yml', 'r'))
+
     parser = ArgumentParser()
     parser.add_argument('-m', '--metric', type=str, default='dot')
     parser.add_argument('-c', '--content', type=str, default='bm25')
@@ -81,7 +84,7 @@ if __name__ == '__main__':
     lbl.fit(courses.course_id.apply(lambda x: [x]))   
 
     # co-purchase frequency
-    train = pd.read_csv('resources/train_onehot.csv')
+    train = pd.read_csv('seen/resources/train_onehot.csv')
     courses = train[train.columns[1:]].values.transpose()  # (728, 59737)
 
     if args.metric == 'cos':

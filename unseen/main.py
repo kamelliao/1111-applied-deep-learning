@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import joblib
+import yaml
 
 import pandas as pd
 from sklearn.preprocessing import MultiLabelBinarizer
@@ -18,7 +19,7 @@ from vocab import UNK_TOKEN
 COURSE_FEAT = ['course_id', 'sub_groups']
 
 def get_dataset(split: str):
-    all_datasets = load_datasets()
+    all_datasets = load_datasets(cfg['data_path'])
     dataset = all_datasets[split].copy()
 
     users = pd.read_json('users.json', lines=True)
@@ -29,19 +30,21 @@ def get_dataset(split: str):
     if 'train' in split:
         dataset['course_id'] = dataset.course_id.str.split()
 
-        lbl_subgroups: MultiLabelBinarizer = joblib.load('./resources/course/sub_groups.joblib')
+        lbl_subgroups: MultiLabelBinarizer = joblib.load('unseen/resources/course/sub_groups.joblib')
         dataset['label_sub_groups'] = dataset.course_id.apply(
             lambda clist: lbl_subgroups.transform([courses[cid]['sub_groups'].split(',') for cid in clist]).sum(axis=0)
         )
 
 
-    lbl: MultiLabelBinarizer = joblib.load(f'./resources/course/course_id.joblib')
+    lbl: MultiLabelBinarizer = joblib.load(f'unseen/resources/course/course_id.joblib')
     dataset[f'label_course_id'] = lbl.transform(dataset['course_id']).tolist()
 
     return dataset
 
 
 if __name__ == '__main__':
+    cfg = yaml.safe_load(open('config.yml', 'r'))
+
     parser = ArgumentParser()
     parser.add_argument('-t', '--test_file', type=str, default='test_unseen', help='[ val_seen | val_unseen | test_seen | test_unseen ]')
     args = parser.parse_args()
@@ -108,7 +111,7 @@ if __name__ == '__main__':
             results.extend(top50.tolist())
 
     # write prediction results
-    lbl: MultiLabelBinarizer = joblib.load('./resources/course/course_id.joblib')
+    lbl: MultiLabelBinarizer = joblib.load('unseen/resources/course/course_id.joblib')
     lbl_map = {cid: cname for cid, cname in enumerate(lbl.classes_)}
 
     results = [[lbl_map[r] for r in rl] for rl in results]

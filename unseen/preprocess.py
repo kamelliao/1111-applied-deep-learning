@@ -1,3 +1,5 @@
+import yaml
+
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
@@ -11,7 +13,7 @@ def userfeat_transform(col: pd.Series):
         return col
 
     lbl = LabelEncoder()
-    lbl.classes_ = np.load(f'resources/user/{col.name}.npy')
+    lbl.classes_ = np.load(f'unseen/resources/user/{col.name}.npy')
     col = col.str.split(',').apply(lambda x: lbl.transform(x))
     return col
 
@@ -21,13 +23,15 @@ def coursefeat_transform(col: pd.Series):
         return col
 
     lbl = LabelEncoder()
-    lbl.classes_ = np.load(f'resources/course/{col.name}.npy')
+    lbl.classes_ = np.load(f'unseen/resources/course/{col.name}.npy')
     col = col.str.split(',').apply(lambda x: lbl.transform(x))
     return col
 
 
 if __name__ == '__main__':
-    datasets = load_datasets()
+    cfg = yaml.safe_load(open('config.yml', 'r'))
+
+    datasets = load_datasets(cfg['data_path'])
     users = datasets['users'].copy().fillna(UNK_TOKEN)
     users = users.apply(userfeat_transform)
     users.to_json('users.json', orient='records', lines=True)

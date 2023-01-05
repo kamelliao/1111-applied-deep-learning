@@ -1,25 +1,30 @@
-import pandas as pd
-from ckiptagger import WS
+from pathlib import Path
+import yaml
+
 from bs4 import BeautifulSoup
-
-COURSE_FILE = 'hahow/data/courses.csv'
-TOKENIZER_PATH = 'resources/data'
-
-PUNC = "！？｡。＂＃＄％＆＇（）＊＋，，－／：；＜＝＞＠［＼］＾＿｀｛｜｝～｟｠｢｣､、〃》「」『』【】〔〕〖〗〘〙〚〛〜〝〞〟〰〾〿–—‘’‛“”„‟…‧﹏. "
-COURSE_TEXT_FIELDS = [
-    'course_name',
-    'teacher_intro',
-    'description',
-    'will_learn',
-    'required_tools',
-    'recommended_background',
-    'target_group'
-]
-TOKENIZED_COURSE_FILE = 'resources/courses_tokenized.json'
-TOKENIZED_CLEAN_COURSE_FILE = 'resources/courses_tokenized_clean.json'
+from ckiptagger import WS
+import pandas as pd
 
 
 if __name__ == '__main__':
+    cfg = yaml.safe_load(open('config.yml', 'r'))
+
+    COURSE_FILE = Path(cfg['data_path'], 'courses.csv')
+    TOKENIZER_PATH = 'seen/resources/data'
+    TOKENIZED_COURSE_FILE = 'seen/resources/courses_tokenized.json'
+    TOKENIZED_CLEAN_COURSE_FILE = 'seen/resources/courses_tokenized_clean.json'
+
+    PUNC = "！？｡。＂＃＄％＆＇（）＊＋，，－／：；＜＝＞＠［＼］＾＿｀｛｜｝～｟｠｢｣､、〃》「」『』【】〔〕〖〗〘〙〚〛〜〝〞〟〰〾〿–—‘’‛“”„‟…‧﹏. "
+    COURSE_TEXT_FIELDS = [
+        'course_name',
+        'teacher_intro',
+        'description',
+        'will_learn',
+        'required_tools',
+        'recommended_background',
+        'target_group'
+    ]
+
     courses = pd.read_csv(COURSE_FILE)
 
     # html -> text

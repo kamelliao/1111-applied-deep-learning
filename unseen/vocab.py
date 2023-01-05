@@ -1,4 +1,5 @@
 import os
+import yaml
 
 import numpy as np
 from pandas import Series
@@ -29,17 +30,18 @@ def build_vocab(field: Series, output_path: str):
 
 
 if __name__ == '__main__':
-    datasets = load_datasets()
+    cfg = yaml.safe_load(open('config.yml', 'r'))
+    datasets = load_datasets(cfg['data_path'])
 
-    os.makedirs('./resources/user', exist_ok=True)
-    os.makedirs('./resources/course', exist_ok=True)
+    os.makedirs('unseen/resources/user', exist_ok=True)
+    os.makedirs('unseen/resources/course', exist_ok=True)
 
     # users
     users = datasets['users'].fillna(UNK_TOKEN)
     for prop in USER_FEATS:
-        build_vocab(users[prop].str.split(','), f'./resources/user/{prop}.npy')
+        build_vocab(users[prop].str.split(','), f'unseen/resources/user/{prop}.npy')
 
     # courses
     courses = datasets['courses'].fillna(UNK_TOKEN)
     for prop in COURSE_FEATS:
-        build_vocab(courses[prop].str.split(','), f'./resources/course/{prop}.npy')
+        build_vocab(courses[prop].str.split(','), f'unseen/resources/course/{prop}.npy')
