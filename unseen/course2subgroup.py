@@ -1,6 +1,7 @@
 from collections import Counter
 
 import pandas as pd
+import yaml
 
 from main import load_datasets
 
@@ -19,14 +20,15 @@ def course2subgroups(course_ids: pd.Series):
 
 
 if __name__ == '__main__':
-    datasets = load_datasets()
+    cfg = yaml.safe_load(open('config.yml', 'r'))
+    datasets = load_datasets(cfg['data_path'])
     courses = datasets['courses'].copy()
     courses = {r['course_id']: r.to_dict() for _, r in courses.iterrows()}
     subgroups = datasets['subgroups'].copy()
     subgroups = {r['subgroup_name']: r['subgroup_id'] for _, r in subgroups.iterrows()}
 
-    preds = pd.read_csv('preds_test_seen_cf.csv')
+    preds = pd.read_csv('preds.csv')
     preds['course_id'] = preds.course_id.str.split()
     preds['subgroup'] = preds.course_id.apply(course2subgroups)
     
-    preds[['user_id', 'subgroup']].to_csv('preds_sub_cf.csv', index=False)
+    preds[['user_id', 'subgroup']].to_csv('unseen_group_pred.csv', index=False)

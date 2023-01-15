@@ -23,6 +23,7 @@ COURSE_FEATS = [
 
 
 def load_datasets():
+    cfg = yaml.safe_load(open('config.yml', 'r'))
     dataset_dir = Path(cfg['data_path'])
     datasets = {data_path.stem: pd.read_csv(data_path) for data_path in dataset_dir.iterdir()}
 
